@@ -7,3 +7,5 @@ N'importe qui pourras contribuer pour ajouter sa pierre a l'édifice
 Le projet est un projet node js, il pourras "s'étendre" et n'est pas obligatoirement juste un bot discord, il est possible de faire appel a n'importe quel api, bd ou autre.... tout est possible. Bref... voila voila.
 
 afin d'installer les dépencances : "npm install" ou "yarn install" si cela ne fonctionne pas installer node js et npm et/ou yarn 
+
+il faut égallement créer un fhichier config.js selon le modéle. 
