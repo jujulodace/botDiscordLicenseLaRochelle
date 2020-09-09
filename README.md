@@ -8,4 +8,4 @@ Le projet est un projet node js, il pourras "s'étendre" et n'est pas obligatoir
 
 afin d'installer les dépencances : "npm install" ou "yarn install" si cela ne fonctionne pas installer node js et npm et/ou yarn 
 
-il faut égallement créer un fhichier config.js selon le modéle. 
+il faut égallement créer un fhichier config.js selon le modéle.  
