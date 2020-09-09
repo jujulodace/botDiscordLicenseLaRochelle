@@ -1,0 +1,23 @@
+{
+  "name": "botdiscordlicenselarochelle",
+  "version": "1.0.0",
+  "description": "Bonjour ceci est le message de premier commit de ce dépot.",
+  "main": "bot.js",
+  "dependencies": {
+    "discord.js": "^12.3.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jujulodace/botDiscordLicenseLaRochelle.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jujulodace/botDiscordLicenseLaRochelle/issues"
+  },
+  "homepage": "https://github.com/jujulodace/botDiscordLicenseLaRochelle#readme"
+}
