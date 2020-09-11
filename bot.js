@@ -57,9 +57,9 @@ bot.on('ready', () => {
         .setColor('#FFFFFF')
         .setTitle('Help  ')
         .setThumbnail(bot.user.avatarURL())
-        .addField(prefix + 'prefix', 'info de la commande', true)
-        .addField(prefix + 'commande2', 'info de la commande', true)
-        .addField(prefix + 'commande3', 'info de la commande', true)
+        .addField( param[guild.id].prefix + 'prefix', 'info de la commande', true)
+        .addField( param[guild.id].prefix + 'commande2', 'info de la commande', true)
+        .addField( param[guild.id].prefix + 'commande3', 'info de la commande', true)
         .addField('-', 'github : (https://github.com/jujulodace/botDiscordLicenseLaRochelle)', false)
         .setFooter("footer. message en bas quoi..");
 })
@@ -89,7 +89,7 @@ bot.on('message', (message) => {
     mes = message.content.split(" ");
     mes[0] = mes[0].toLowerCase()
     try {
-        if (mes[0][0] === prefix) {
+        if (mes[0][0] ===  param[guild.id].prefix) {
             switch (message.content.substring(1)) {//supprime le premier chacractère
                 case "help":
                     help(message)
