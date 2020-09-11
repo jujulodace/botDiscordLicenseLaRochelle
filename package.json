@@ -4,7 +4,8 @@
   "description": "Bonjour ceci est le message de premier commit de ce dépot.",
   "main": "bot.js",
   "dependencies": {
-    "discord.js": "^12.3.1"
+    "discord.js": "^12.3.1",
+    "fs": "0.0.1-security"
   },
   "devDependencies": {},
   "scripts": {
