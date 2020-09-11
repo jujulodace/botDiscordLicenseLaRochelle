@@ -57,11 +57,12 @@ bot.on('ready', () => {
         .setColor('#FFFFFF')
         .setTitle('Help  ')
         .setThumbnail(bot.user.avatarURL())
-        .addField('prefix', 'info de la commande', true)
-        .addField( 'commande2', 'info de la commande', true)
-        .addField( 'commande3', 'info de la commande', true)
-        .addField('-', 'github : (https://github.com/jujulodace/botDiscordLicenseLaRochelle)', false)
-        .setFooter("footer. message en bas quoi..");
+        .addField('/help', 'liste des commandes', true)
+        .addField('/prefix', 'change le prefix', true)
+        .addField('/default', 'change le channel de base du bot', true)
+        .addField('/add', 'ajoute le channel vocal actif dans la liste des channel dynamique', true)
+        .addField('depot github', ' [github](https://github.com/jujulodace/botDiscordLicenseLaRochelle)', false)
+        .setFooter("blabla ");
 })
 /** 
  * @event guildCreate
@@ -90,15 +91,16 @@ bot.on('message', (message) => {
     mes[0] = mes[0].toLowerCase()
     try {
         if (mes[0][0] === param[message.guild.id].prefix) {
-            switch (message.content.substring(1)) {//supprime le premier chacractère
+            switch (mes[0].substring(1)) {//supprime le premier chacractère
                 case "help":
                     help(message)
                     break;
                 case "default":
-                    setGeneral(message.channel.id)
+                    setGeneral(message.channel)
                     break;
                 case "prefix":
-                    setPrefix(message)
+                    console.log("oui")
+                    setPrefix(message,mes[1])
                     break;
                 case "add":
                     addchannel(message.author.id, message.guild)
@@ -108,7 +110,7 @@ bot.on('message', (message) => {
             }
         }
     } catch (error) {
-        message.channel.send("une erreur est inatendu est survenue" + "```" + error + "```")
+        message.channel.send("une erreur inatendu est survenue" + "```" + error + "```")
     }
 })
 /** 
@@ -166,14 +168,21 @@ const help = (message) => message.channel.send(helpEmbed)
  * 
  * Modifie le channel default pour le bot sur ce serveur
  */
-const setGeneral = (channel) => param[channel.guild.id].general = channel
+const setGeneral = (channel) => {
+    param[channel.guild.id].general = channel.id
+    channel.send(`Le nouveau channel du bot est ${channel.name}`)
+}
+
 /**
  * 
  * @param {message} message message d'origine
  * 
  * Modifie le prefix pour le bot sur ce serveur
  */
-const setPrefix = (message) => param[message.guild.id].prefix = message.content[0]
+const setPrefix = (message,prefix) => {
+    param[message.guild.id].prefix =prefix
+    message.channel.send(`Le nouveau prefix du bot est ${prefix}`)
+}
 
 
 /**
@@ -195,7 +204,7 @@ const addchannel = (author, serveur) => {
                 param[serveur.id].channels[element.id].name = element.name
                 param[serveur.id].channels[element.id].userLimit = element.userLimit
                 makeSubChannel(element.name, element.parentID, element.id, serveur)
-                serveur.channels.cache.get(param[serveur.id].general).send("channel add")
+                serveur.channels.cache.get(param[serveur.id].general).send(`channel ${channel.name} add`)
             }
         }
     });
