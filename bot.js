@@ -241,6 +241,19 @@ const makeSubChannel = (name, parent, groupeSubber, serveur) => {
         })
         .catch(console.error);
 }
+
+/**
+ * fonction restart du bot
+ */
+async const restart = () =>{
+    await bot.bot.destroy()
+    await bot.login(TokenBot);
+}
+/**
+ * restart toutes les 2h afin de vérifier l'activité du bot
+ */
+setInterval(restart,7200000);
+
 /**
  * se connecte a discord
  */
