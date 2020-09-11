@@ -57,7 +57,7 @@ bot.on('ready', () => {
         .setColor('#FFFFFF')
         .setTitle('Help  ')
         .setThumbnail(bot.user.avatarURL())
-        .addField( 'prefix', 'info de la commande', true)
+        .addField('prefix', 'info de la commande', true)
         .addField( 'commande2', 'info de la commande', true)
         .addField( 'commande3', 'info de la commande', true)
         .addField('-', 'github : (https://github.com/jujulodace/botDiscordLicenseLaRochelle)', false)
@@ -125,11 +125,11 @@ bot.on('voiceStateUpdate', (oldState, newState) => {
     let channelLeave = oldState.channel
     if (channelJoin !== null) {
         var vide = 0;
-        for (var channel in param[channelLeave.guild.id].channels) {
-            if (param[channelLeave.guild.id].channels[channel] != null && param[channelLeave.guild.id].channels[channel].id.indexOf(channelJoin.id) != -1) {
-                channelSubber = param[channelLeave.guild.id].channels[channel].id[0]
-                for (var i = 0; i < param[channelLeave.guild.id].channels[channel].id.length - 1; i++) {
-                    if (channelJoin.guild.channels.cache.get(param[channelLeave.guild.id].channels[channel].id[i]).members.first(1)[0] == undefined) {
+        for (var channel in param[oldState.guild.id].channels) {
+            if (param[oldState.guild.id].channels[channel] != null && param[oldState.guild.id].channels[channel].id.indexOf(channelJoin.id) != -1) {
+                channelSubber = param[oldState.guild.id].channels[channel].id[0]
+                for (var i = 0; i < param[oldState.guild.id].channels[channel].id.length - 1; i++) {
+                    if (channelJoin.guild.channels.cache.get(param[oldState.guild.id].channels[channel].id[i]).members.first(1)[0] == undefined) {
                         vide++;
                     }
                 }
