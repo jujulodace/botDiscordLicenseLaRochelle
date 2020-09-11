@@ -89,7 +89,7 @@ bot.on('message', (message) => {
     mes = message.content.split(" ");
     mes[0] = mes[0].toLowerCase()
     try {
-        if (mes[0][0] === prefix) {
+        if (mes[0][0] === param[message.guild.id].prefix) {
             switch (message.content.substring(1)) {//supprime le premier chacractère
                 case "help":
                     help(message)
