@@ -6,6 +6,7 @@ const Discord = require('discord.js')
 const bot = new Discord.Client()
 const fs = require("fs")
 
+
 /**
  * Récupère les paramètre dans un le fichier json
  * param {
@@ -47,7 +48,7 @@ const {
 } = require("./config")
 const {
     addchannel,
-    makeSubChannel
+    voiceUp
 } = require("./vocal")
 
 /** 
@@ -67,6 +68,8 @@ bot.on('ready', () => {
         .addField('/add', 'ajoute le channel vocal actif dans la liste des channel dynamique', true)
         .addField('depot github', ' [github](https://github.com/jujulodace/botDiscordLicenseLaRochelle)', false)
         .setFooter("blabla ");
+
+    bot.user.setActivity('la doc', { type: 'WATCHING' })
 })
 /** 
  * @event guildCreate
@@ -131,37 +134,7 @@ bot.on('message', (message) => {
  * 
  */
 bot.on('voiceStateUpdate', (oldState, newState) => {
-    let channelJoin = newState.channel
-    let channelLeave = oldState.channel
-    if (channelJoin !== null) {
-        var vide = 0;
-        for (var channel in param[oldState.guild.id].channels) {
-            if (param[oldState.guild.id].channels[channel] != null && param[oldState.guild.id].channels[channel].id.indexOf(channelJoin.id) != -1) {
-                channelSubber = param[oldState.guild.id].channels[channel].id[0]
-                for (var i = 0; i < param[oldState.guild.id].channels[channel].id.length - 1; i++) {
-                    if (channelJoin.guild.channels.cache.get(param[oldState.guild.id].channels[channel].id[i]).members.first(1)[0] == undefined) {
-                        vide++;
-                    }
-                }
-                if (vide == 0) {
-                    makeSubChannel(channelJoin.name, channelJoin.parentID, channel, channelJoin.guild)
-                }
-            }
-        }
-    }
-    if (channelLeave !== null) {
-        for (var channel in param[oldState.guild.id].channels) {
-            if (param[oldState.guild.id].channels[channel] != null && param[oldState.guild.id].channels[channel].id.indexOf(channelLeave.id) != -1) {
-                if (param[oldState.guild.id].channels[channel].id.length >= 2 && channelLeave.guild.channels.cache.get(channelLeave.id).members.first(1)[0] == undefined) {
-                    channelLeave.guild.channels.cache.get(channelLeave.id).delete()
-                    param[oldState.guild.id].channels[channel].id.splice(param[oldState.guild.id].channels[channel].id.indexOf(channelLeave.id), 1)
-                    fs.writeFileSync("parametre.json", JSON.stringify(param))
-                    if (param[oldState.guild.id].channels[channel].id.length == 1 && channelJoin != null && channelJoin.name == channelLeave.name)
-                        makeSubChannel(channelLeave.name, channelLeave.parentID, channel, channelLeave.guild)
-                }
-            }
-        }
-    }
+    voiceUp(oldState, newState)
 })
 /**
  * 
@@ -191,11 +164,6 @@ const setPrefix = (message, prefix) => {
     param[message.guild.id].prefix = prefix
     message.channel.send(`Le nouveau prefix du bot est ${prefix}`)
 }
-
-
-
-
-
 const addGroupe = (message, role) => {
     if (role.name == "TD1" || role.name == "TD2") {
         message.member.roles.add(role);
