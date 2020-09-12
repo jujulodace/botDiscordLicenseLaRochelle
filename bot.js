@@ -100,10 +100,13 @@ bot.on('message', (message) => {
                     break;
                 case "prefix":
                     console.log("oui")
-                    setPrefix(message,mes[1])
+                    setPrefix(message, mes[1])
                     break;
                 case "add":
                     addchannel(message.author.id, message.guild)
+                    break;
+                case "groupe":
+                    addGroupe(message, message.member.guild.roles.cache.filter(role => role.name ===mes[1]).first())
                     break;
                 default:
                     break;
@@ -179,8 +182,8 @@ const setGeneral = (channel) => {
  * 
  * Modifie le prefix pour le bot sur ce serveur
  */
-const setPrefix = (message,prefix) => {
-    param[message.guild.id].prefix =prefix
+const setPrefix = (message, prefix) => {
+    param[message.guild.id].prefix = prefix
     message.channel.send(`Le nouveau prefix du bot est ${prefix}`)
 }
 
@@ -242,17 +245,30 @@ const makeSubChannel = (name, parent, groupeSubber, serveur) => {
         .catch(console.error);
 }
 
+const addGroupe =(message, role) =>{
+    if(role.name =="TD1" ||role.name =="TD2"){
+        message.member.roles.add(role);
+        message.channel.send(`ajout du role ${role.name}`)
+    }
+    else
+    message.channel.send("impossible d'ajouter ce role")
+}
+
 /**
- * fonction restart du bot
+ * fonction restart du bot, et ajout dans le salon log
  */
-async const restart = () =>{
-    await bot.bot.destroy()
+ const restart = async () => {
+    let t1 = new Date();
+    await bot.channels.cache.get("753958418426888273").send(`[${t1.getHours()}h${t1.getMinutes()}m${t1.getSeconds()}s${t1.getMilliseconds()}ms] restart bot process... `)
+    await bot.destroy()
     await bot.login(TokenBot);
+    t1 = new Date();
+    await bot.channels.cache.get("753958418426888273").send(`[${t1.getHours()}h${t1.getMinutes()}m${t1.getSeconds()}s${t1.getMilliseconds()}ms] restart bot sucessful !`)
 }
 /**
  * restart toutes les 2h afin de vérifier l'activité du bot
  */
-setInterval(restart,7200000);
+setInterval(restart, 7200000);
 
 /**
  * se connecte a discord
