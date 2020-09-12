@@ -1,7 +1,7 @@
 {
   "name": "botdiscordlicenselarochelle",
   "version": "1.0.0",
-  "description": "Bonjour ceci est le message de premier commit de ce dépot.",
+  "description": "Bot du serveur discord de la L2 info de la rochelle.",
   "main": "bot.js",
   "dependencies": {
     "discord.js": "^12.3.1",
