@@ -50,6 +50,7 @@ const {
     addchannel,
     voiceUp
 } = require("./vocal")
+//const { clear } = require('console')
 
 /** 
  * @event ready
@@ -116,6 +117,18 @@ bot.on('message', (message) => {
                 case "groupe":
                     addGroupe(message, message.member.guild.roles.cache.filter(role => role.name === mes[1]).first())
                     break;
+                case "restart":
+                    if (message.author.id == "191277501035708417") {
+                        restart()
+                    }
+                    break;
+                case "clear":
+                    if (mes.length == 2 && message.member.roles.cache.get("751806478029160510")) {
+                        clear(mes[1], message)
+                    } else {
+
+                        message.channel.send("droits insuffisant" + mes.length + " " + message.member.roles.cache.get("751806478029160510").name)
+                    }
                 default:
                     break;
             }
@@ -165,7 +178,7 @@ const setPrefix = (message, prefix) => {
     message.channel.send(`Le nouveau prefix du bot est ${prefix}`)
 }
 const addGroupe = (message, role) => {
-    if (role.name == "TD1" || role.name == "TD2") {
+    if (role.name == "TD1" || role.name == "TD2" || role.name == "TD3" || role.name == "TD4") {
         message.member.roles.add(role);
         message.channel.send(`ajout du role ${role.name}`)
     }
@@ -183,6 +196,13 @@ const restart = async () => {
     await bot.login(TokenBot);
     t1 = new Date();
     await bot.channels.cache.get("753958418426888273").send(`[${t1.getHours()}h${t1.getMinutes()}m${t1.getSeconds()}s${t1.getMilliseconds()}ms] restart bot sucessful !`)
+}
+
+const clear = (number, message) => {
+    console.log(number)
+    message.channel.bulkDelete(Number(number))
+        .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
+        .catch(console.error);
 }
 /**
  * restart toutes les 2h afin de vérifier l'activité du bot
