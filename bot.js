@@ -69,7 +69,14 @@ bot.on('ready', () => {
         .addField('/add', 'ajoute le channel vocal actif dans la liste des channel dynamique', true)
         .addField('depot github', ' [github](https://github.com/jujulodace/botDiscordLicenseLaRochelle)', false)
         .setFooter("blabla ");
-
+    groupEmbed = new Discord.MessageEmbed()
+        .setColor('#FFFFFF')
+        .setTitle('Groupes ')
+        .setThumbnail(bot.user.avatarURL())
+        .addField('Groupes', 'Dans la promo, il existe 3 groupe de TD, ainsi que 4 groupe de TD d\'anglais. Ces dernier sont nommées TD1, TD2, TD3. ainsi que TDA1, TDA2, TDA3 et TDA4, pour l\'anglais.', true)
+        .addField('clear', 'étant donner le quiproco dans la gestion des groupe, si le groupe TD que vous avez rejoin n\'est pas le Boolean, il est possible de réinitialiser ses role de groupe avec la réaction "croix rouge", ou en écrivant /groupe clear', true)
+        .addField('rejoindre un groupe', 'Pour rejoindre un groupe, il faudrat réagir au bon emoji, ou écrire, par exemple /groupe TD1. Attention, il n\'est bien entendu possible de rejoindre  un seul groupe de TD, et un seul groupe de TDA, true')
+        .addField('/log', 'Afin de vérifier que le bot a bien réagis, ci dessous se trouvent les action d\'ajout ou suppression de role de la dernière minute.', true);
     bot.user.setActivity('la doc', { type: 'WATCHING' })
 })
 /** 
@@ -115,7 +122,16 @@ bot.on('message', (message) => {
                     addchannel(message.author.id, message.guild)
                     break;
                 case "groupe":
-                    addGroupe(message, message.member.guild.roles.cache.filter(role => role.name === mes[1]).first())
+                    message.channel.send(groupEmbed);
+                    message.react("🥇")
+                    message.react("🥈")
+                    message.react("🥉")
+                    message.react("1️⃣")
+                    message.react("2️⃣")
+                    message.react("3️⃣")
+                    message.react("4️⃣")
+                    message.react("❌")
+                    //addGroupe(message, message.member.guild.roles.cache.filter(role => role.name === mes[1]).first())
                     break;
                 case "restart":
                     if (message.author.id == "191277501035708417") {
