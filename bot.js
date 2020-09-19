@@ -6,7 +6,6 @@ const Discord = require('discord.js')
 const bot = new Discord.Client()
 const fs = require("fs")
 
-
 /**
  * Récupère les paramètre dans un le fichier json
  * param {
@@ -55,9 +54,10 @@ const {
 /** 
  * @event ready
  * 
- * Lancement dut bot  
+ * Lancement dut bot, creation Embed
  * 
  */
+let log;
 bot.on('ready', () => {
     helpEmbed = new Discord.MessageEmbed()
         .setColor('#FFFFFF')
@@ -78,6 +78,7 @@ bot.on('ready', () => {
         .addField('rejoindre un groupe', 'Pour rejoindre un groupe, il faudrat réagir au bon emoji, ou écrire, par exemple /groupe TD1. Attention, il n\'est bien entendu possible de rejoindre  un seul groupe de TD, et un seul groupe de TDA', true)
         .addField('/log', 'Afin de vérifier que le bot a bien réagis, ci dessous se trouvent les action d\'ajout ou suppression de role de la dernière minute.', true);
     bot.user.setActivity('la doc', { type: 'WATCHING' })
+    log = bot.channels.cache.get("753958418426888273")
 })
 /** 
  * @event guildCreate
@@ -115,67 +116,16 @@ bot.on('message', (message) => {
                     setGeneral(message.channel)
                     break;
                 case "prefix":
-                    console.log("oui")
                     setPrefix(message, mes[1])
                     break;
                 case "add":
                     addchannel(message.author.id, message.guild)
                     break;
                 case "make":
-                    makeRole(message.guild,mes[2])
+                    makeRole(message.guild, mes[2])
                     break;
                 case "groupe":
-                    message.channel.send(groupEmbed).then(message => {
-                        message.react("🥇")
-                        message.react("🥈")
-                        message.react("🥉")
-                        message.react("1️⃣")
-                        message.react("2️⃣")
-                        message.react("3️⃣")
-                        message.react("4️⃣")
-                        message.react("❌")
-                        const filter = (reaction, user) => {
-                            return ['🥇', '🥈', '🥉', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '❌'].includes(reaction.emoji.name) && user.id !== message.author.id;
-                        };
-                        const collector = message.createReactionCollector(filter);
-
-                        collector.on('collect', (reaction, user) => {
-                            console.log(`Collected ${reaction.emoji.name} from ${user.id}`);
-                            const name = reaction.emoji.name
-                            switch (name) {
-                                case "🥇" || "TD1": message.channel.send("role TD1")
-                                    addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TD1").first())
-                                    break;
-                                case "🥈": message.channel.send("role TD2")
-                                    addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TD2").first())
-                                    break;
-                                case "🥉": message.channel.send("role TD3")
-                                    addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TD3").first())
-                                    break;
-                                case "1️⃣": message.channel.send("role TDA1")
-                                    addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA1").first())
-                                    break;
-                                case "2️⃣": message.channel.send("role TDA2")
-                                    addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA2").first())
-                                    break;
-                                case "3️⃣": message.channel.send("role TDA3")
-                                    addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA3").first())
-                                    break;
-                                case "4️⃣": message.channel.send("role TDA4")
-                                    addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA4").first())
-                                    break;
-                                case "❌": message.channel.send("clear roles")
-                                    break;
-                                default:
-                                    break;
-                            }
-                        });
-
-                        collector.on('end', collected => {
-                            console.log(`Collected ${collected.size} items`);
-                        });
-                    })
-                    //addGroupe(message, message.member.guild.roles.cache.filter(role => role.name === mes[1]).first())
+                    ManageGroup(message, mes)
                     break;
                 case "restart":
                     if (message.author.id == "191277501035708417") {
@@ -183,18 +133,15 @@ bot.on('message', (message) => {
                     }
                     break;
                 case "clear":
-                    if (mes.length == 2 && message.member.roles.cache.get("751806478029160510")) {
-                        clear(mes[1], message)
-                    } else {
+                    clear(mes, message)
 
-                        message.channel.send("droits insuffisant" + mes.length + " " + message.member.roles.cache.get("751806478029160510").name)
-                    }
                 default:
                     break;
             }
         }
     } catch (error) {
         message.channel.send("une erreur inatendu est survenue" + "```" + error + "```")
+        log.send(`${logDate()} ${mes[0].substring(1)}` + " erreur : " + "```" + error + "```")
     }
 })
 /** 
@@ -225,6 +172,7 @@ const help = (message) => message.channel.send(helpEmbed)
 const setGeneral = (channel) => {
     param[channel.guild.id].general = channel.id
     channel.send(`Le nouveau channel du bot est ${channel.name}`)
+    log.send(`${logDate()} ${message.member.nickname} a changer le channel du bot en ${channel.name}`)
 }
 
 /**
@@ -236,13 +184,19 @@ const setGeneral = (channel) => {
 const setPrefix = (message, prefix) => {
     param[message.guild.id].prefix = prefix
     message.channel.send(`Le nouveau prefix du bot est ${prefix}`)
+    log.send(`${logDate()} ${message.member.nickname} a changer le prefix du bot en ${prefix}`)
 }
+/**
+ * 
+ * @param {member} member 
+ * @param {role} role 
+ */
 const addGroupe = (member, role) => {
-    if (role.name == "TD1" || role.name == "TD2" || role.name == "TD3" || role.name == "TD4") {
+    if (role.name == "TD1" || role.name == "TD2" || role.name == "TD3" || role.name == "TDA1" || role.name == "TDA2" || role.name == "TDA3" ||role.name == "TDA4") {
         member.roles.add(role);
         //message.channel.send(`ajout du role ${role.name}`)
+        log.send(`${logDate()} ajout du role ${role.name} a ${member.nickname}`)
     }
-
 }
 
 /**
@@ -256,21 +210,122 @@ const restart = async () => {
     t1 = new Date();
     await bot.channels.cache.get("753958418426888273").send(`[${t1.getHours()}h${t1.getMinutes()}m${t1.getSeconds()}s${t1.getMilliseconds()}ms] restart bot sucessful !`)
 }
-
-const clear = (number, message) => {
-    console.log(number)
-    message.channel.bulkDelete(Number(number))
-        .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
-        .catch(console.error);
+/**
+ * retourne la date formater pour les logs
+ */
+const logDate = () => {
+    let t = new Date();
+    return (`[${t.getHours()}h${t.getMinutes()}m${t.getSeconds()}s${t.getMilliseconds()}ms]`)
 }
+/**
+ * 
+ * @param {int} number 
+ * @param {message} message 
+ * 
+ * supprime 'number' messages sur le channel actuelle
+ */
+const clear = (mes, message) => {
+    if (mes.length == 2 && message.member.roles.cache.get("751806478029160510"))
+        message.channel.bulkDelete(Number(mes[1]))
+            .then(messages => {
+                log.send(`${logDate()} deleted ${messages.size} messages in ${message.channel.name}`)
 
+            })
+            .catch(console.error);
+    else message.channel.send("droits insuffisant, ou arguments invalide ")
+
+}
+/**
+ * 
+ * @param {guild} guild 
+ * @param {string} name 
+ * 
+ * création d'un role
+ */
 const makeRole = (guild, name) => {
     guild.roles.create({
         data: {
             name: name,
         }
     })
-    
+    log.send(`${logDate()} creation du role ${name}`)
+}
+
+const messageAddGroup = (message,name) =>{
+
+    addRole(name,message,message.author)
+}
+const addRole = (name,message,user) => {
+    switch (name) {
+        case "🥇" :case "TD1": 
+
+            addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TD1").first())
+            break;
+        case "🥈" :case "TD2":
+            addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TD2").first())
+            break;
+        case "🥉" :case "TD3": 
+            addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TD3").first())
+            break;
+        case "1️⃣" :case "TDA1": 
+            addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA1").first())
+            break;
+        case "2️⃣" :case "TDA2": 
+            addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA2").first())
+            break;
+        case "3️⃣" :case "TDA3": 
+            addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA3").first())
+            break;
+        case "4️⃣" :case "TDA4": 
+            addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA4").first())
+            break;
+        case "❌": 
+            if(message.member.roles.cache.get("751806478029160510")){
+                message.member.roles.set([])
+            }else{
+                message.member.roles.set([])
+            }
+            
+            break;
+        default:
+            break;
+    }
+}
+const messageGroup = (message) => {
+    message.channel.send(groupEmbed).then(message => {
+        message.react("🥇")
+        message.react("🥈")
+        message.react("🥉")
+        message.react("1️⃣")
+        message.react("2️⃣")
+        message.react("3️⃣")
+        message.react("4️⃣")
+        message.react("❌")
+        const filter = (reaction, user) => {
+            return ['🥇', '🥈', '🥉', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '❌'].includes(reaction.emoji.name) && user.id !== message.author.id;
+        };
+        const collector = message.createReactionCollector(filter);
+
+        collector.on('collect', (reaction, user) => {
+            console.log(`Collected ${reaction.emoji.name} from ${user.id}`);
+            const name = reaction.emoji.name
+            addRole(name,message,user)
+        });
+
+        collector.on('end', collected => {
+            console.log(`Collected ${collected.size} items`);
+        });
+    })
+}
+const ManageGroup = (message, mes) => {
+    if (mes.length === 1)
+        messageGroup(message)
+    else if (mes.length === 2)
+        messageAddGroup(message,mes[1])
+    else {
+        message.channel.send("nombre d'arguments invalide")
+    }
+    message.delete({ timeout: 3000 })
 }
 /**
  * restart toutes les 2h afin de vérifier l'activité du bot
