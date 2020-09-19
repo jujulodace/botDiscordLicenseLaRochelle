@@ -121,9 +121,11 @@ bot.on('message', (message) => {
                 case "add":
                     addchannel(message.author.id, message.guild)
                     break;
+                case "make":
+                    makeRole(message.guild,mes[2])
+                    break;
                 case "groupe":
                     message.channel.send(groupEmbed).then(message => {
-                        const filter = (user) => user.id !== "753295246753923202"
                         message.react("🥇")
                         message.react("🥈")
                         message.react("🥉")
@@ -132,17 +134,46 @@ bot.on('message', (message) => {
                         message.react("3️⃣")
                         message.react("4️⃣")
                         message.react("❌")
-                        message.awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
-                            .then(collected => {
-                                const reaction = collected.first();
+                        const filter = (reaction, user) => {
+                            return ['🥇', '🥈', '🥉', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '❌'].includes(reaction.emoji.name) && user.id !== message.author.id;
+                        };
+                        const collector = message.createReactionCollector(filter);
 
-                                
-                                    message.reply(reaction.emoji.name);
-                              
-                            })
-                            .catch(collected => {
-                                message.reply('you reacted with neither a thumbs up, nor a thumbs down.');
-                            });
+                        collector.on('collect', (reaction, user) => {
+                            console.log(`Collected ${reaction.emoji.name} from ${user.id}`);
+                            const name = reaction.emoji.name
+                            switch (name) {
+                                case "🥇" || "TD1": message.channel.send("role TD1")
+                                    addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TD1").first())
+                                    break;
+                                case "🥈": message.channel.send("role TD2")
+                                    addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TD2").first())
+                                    break;
+                                case "🥉": message.channel.send("role TD3")
+                                    addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TD3").first())
+                                    break;
+                                case "1️⃣": message.channel.send("role TDA1")
+                                    addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA1").first())
+                                    break;
+                                case "2️⃣": message.channel.send("role TDA2")
+                                    addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA2").first())
+                                    break;
+                                case "3️⃣": message.channel.send("role TDA3")
+                                    addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA3").first())
+                                    break;
+                                case "4️⃣": message.channel.send("role TDA4")
+                                    addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA4").first())
+                                    break;
+                                case "❌": message.channel.send("clear roles")
+                                    break;
+                                default:
+                                    break;
+                            }
+                        });
+
+                        collector.on('end', collected => {
+                            console.log(`Collected ${collected.size} items`);
+                        });
                     })
                     //addGroupe(message, message.member.guild.roles.cache.filter(role => role.name === mes[1]).first())
                     break;
@@ -206,13 +237,12 @@ const setPrefix = (message, prefix) => {
     param[message.guild.id].prefix = prefix
     message.channel.send(`Le nouveau prefix du bot est ${prefix}`)
 }
-const addGroupe = (message, role) => {
+const addGroupe = (member, role) => {
     if (role.name == "TD1" || role.name == "TD2" || role.name == "TD3" || role.name == "TD4") {
-        message.member.roles.add(role);
-        message.channel.send(`ajout du role ${role.name}`)
+        member.roles.add(role);
+        //message.channel.send(`ajout du role ${role.name}`)
     }
-    else
-        message.channel.send("impossible d'ajouter ce role")
+
 }
 
 /**
@@ -232,6 +262,15 @@ const clear = (number, message) => {
     message.channel.bulkDelete(Number(number))
         .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
         .catch(console.error);
+}
+
+const makeRole = (guild, name) => {
+    guild.roles.create({
+        data: {
+            name: name,
+        }
+    })
+    
 }
 /**
  * restart toutes les 2h afin de vérifier l'activité du bot
