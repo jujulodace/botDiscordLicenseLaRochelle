@@ -14,7 +14,7 @@ const ManageGroup = (message, mes) => {
     else {
         message.channel.send("nombre d'arguments invalide")
     }
-    message.delete({ timeout: 3000 })
+
 }
 /**
  * 
