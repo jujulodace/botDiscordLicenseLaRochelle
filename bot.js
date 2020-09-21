@@ -81,9 +81,8 @@ bot.on('ready', () => {
         .setTitle('Groupes ')
         .setThumbnail(bot.user.avatarURL())
         .addField('Groupes', 'Dans la promo, il existe 3 groupe de TD, ainsi que 4 groupe de TD d\'anglais. Ces dernier sont nommées TD1, TD2, TD3. ainsi que TDA1, TDA2, TDA3 et TDA4, pour l\'anglais.', true)
-        .addField('clear', 'étant donner le quiproco dans la gestion des groupe, si le groupe TD que vous avez rejoin n\'est pas le Boolean, il est possible de réinitialiser ses role de groupe avec la réaction "croix rouge", ou en écrivant /groupe clear', true)
-        .addField('rejoindre un groupe', 'Pour rejoindre un groupe, il faudrat réagir au bon emoji, ou écrire, par exemple /groupe TD1. Attention, il n\'est bien entendu possible de rejoindre  un seul groupe de TD, et un seul groupe de TDA', true)
-        .addField('/log', 'Afin de vérifier que le bot a bien réagis, ci dessous se trouvent les action d\'ajout ou suppression de role de la dernière minute.', true);
+        .addField('rejoindre un groupe, ou changer de groupe', 'Pour ce faire, il faut réagir au bon emoji, ou écrire, par exemple /groupe TD1. Il n\'est bien entendu possible de rejoindre  un seul groupe de TD, et un seul groupe de TDA', true)
+        .addField('/log TODOOOO', 'Afin de vérifier que le bot a bien réagis, ci dessous se trouvent les action d\'ajout ou suppression de role de la dernière minute.', true);
     bot.user.setActivity('la doc', { type: 'WATCHING' })
     log = bot.channels.cache.get("753958418426888273")
     setLog(log)
