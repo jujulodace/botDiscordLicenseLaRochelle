@@ -9,8 +9,10 @@ let log;
 const ManageGroup = (message, mes) => {
     if (mes.length === 1)
         messageGroup(message)
-    else if (mes.length === 2)
+    else if (mes.length === 2) {
         messageAddGroup(message, mes[1])
+        message.channel.send("Action role effectuer")
+    }
     else {
         message.channel.send("nombre d'arguments invalide")
     }
@@ -29,10 +31,8 @@ const messageGroup = (message) => {
         message.react("🥉")
         message.react("1️⃣")
         message.react("2️⃣")
-        message.react("3️⃣")
-        message.react("4️⃣")
         const filter = (reaction, user) => {
-            return ['🥇', '🥈', '🥉', '1️⃣', '2️⃣', '3️⃣', '4️⃣'].includes(reaction.emoji.name) && user.id !== message.author.id;
+            return ['🥇', '🥈', '🥉', '1️⃣', '2️⃣'].includes(reaction.emoji.name) && user.id !== message.author.id;
         };
         const collector = message.createReactionCollector(filter, { dispose: true });
 
@@ -74,23 +74,14 @@ const addRole = (name, message, user) => {
             removeGroupeTD(message.guild.members.cache.get(user.id))
             addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TD3").first())
             break;
-        case "1️⃣": case "TDA1":
+        case "1️⃣": case "Ang_McGarry":
             removeGroupTDA(message.guild.members.cache.get(user.id))
-            addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA1").first())
+            addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "Ang_McGarry").first())
             break;
-        case "2️⃣": case "TDA2":
+        case "2️⃣": case "Ang_Bastiat":
             removeGroupTDA(message.guild.members.cache.get(user.id))
-            addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA2").first())
+            addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "Ang_Bastiat").first())
             break;
-        case "3️⃣": case "TDA3":
-            removeGroupTDA(message.guild.members.cache.get(user.id))
-            addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA3").first())
-            break;
-        case "4️⃣": case "TDA4":
-            removeGroupTDA(message.guild.members.cache.get(user.id))
-            addGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA4").first())
-            break;
-
         default:
             break;
     }
@@ -118,23 +109,15 @@ const removeRole = (name, message, user) => {
 
             removeGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TD3").first())
             break;
-        case "1️⃣": case "TDA1":
+        case "1️⃣": case "Ang_Bastiat":
 
             removeGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA1").first())
             break;
-        case "2️⃣": case "TDA2":
+        case "2️⃣": case "Ang_McGarry":
 
             removeGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA2").first())
             break;
-        case "3️⃣": case "TDA3":
-
-            removeGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA3").first())
-            break;
-        case "4️⃣": case "TDA4":
-
-            removeGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA4").first())
-            break;
-
+ 
         default:
             break;
     }
@@ -157,7 +140,7 @@ const messageAddGroup = (message, name) => {
  * @param {role} role 
  */
 const addGroupe = (member, role) => {
-    if (role.name == "TD1" || role.name == "TD2" || role.name == "TD3" || role.name == "TDA1" || role.name == "TDA2" || role.name == "TDA3" || role.name == "TDA4") {
+    if (role.name == "TD1" || role.name == "TD2" || role.name == "TD3" ||  role.name == "Ang_Bastiat" || role.name == "Ang_McGarry") {
         member.roles.add(role);
         //message.channel.send(`ajout du role ${role.name}`)
         log.send(`${logDate()} ajout du role ${role.name} a ${member.nickname}`)
@@ -170,7 +153,7 @@ const addGroupe = (member, role) => {
  * @param {role} role 
  */
 const removeGroupe = (member, role) => {
-    if (role.name == "TD1" || role.name == "TD2" || role.name == "TD3" || role.name == "TDA1" || role.name == "TDA2" || role.name == "TDA3" || role.name == "TDA4") {
+    if (role.name == "TD1" || role.name == "TD2" || role.name == "TD3" || role.name == "Ang_Bastiat" || role.name == "Ang_McGarry") {
         member.roles.remove(role)
         log.send(`${logDate()} suppression du role ${role.name} a`)
     }
@@ -183,10 +166,8 @@ const removeGroupeTD = (member) => {
 }
 
 const removeGroupTDA = (member) => {
-    removeGroupe(member, member.guild.roles.cache.filter(role => role.name === "TDA1").first())
-    removeGroupe(member, member.guild.roles.cache.filter(role => role.name === "TDA2").first())
-    removeGroupe(member, member.guild.roles.cache.filter(role => role.name === "TDA3").first())
-    removeGroupe(member, member.guild.roles.cache.filter(role => role.name === "TDA4").first())
+    removeGroupe(member, member.guild.roles.cache.filter(role => role.name === "Ang_Bastiat").first())
+    removeGroupe(member, member.guild.roles.cache.filter(role => role.name === "Ang_McGarry").first())
 }
 
 
