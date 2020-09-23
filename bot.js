@@ -82,7 +82,7 @@ bot.on('ready', () => {
         .setThumbnail(bot.user.avatarURL())
         .addField('Groupes', 'Dans la promo, il existe 3 groupe de TD, ainsi que 2 groupe de TD d\'anglais (selon l\enseignant). Ces dernier sont nommées TD1, TD2, TD3. ainsi que Ang_McGarry et Ang_Bastiat', true)
         .addField('rejoindre un groupe, ou changer de groupe', 'Pour ce faire, il faut réagir au bon emoji, ou écrire, par exemple /groupe TD1. Il n\'est bien entendu possible de rejoindre  un seul groupe de TD, et un seul groupe de TDA', true)
-        .addField('TD1', 'medailles 1,2,3 ...', true);
+        .addField('TD1', 'medailles 1,2,3 ...', true)
         .addField('/anglais', '1 = Ang_McGarryn 2 = Ang_Bastiat.', true);
     bot.user.setActivity('la doc', { type: 'WATCHING' })
     log = bot.channels.cache.get("753958418426888273")
