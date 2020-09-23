@@ -111,11 +111,11 @@ const removeRole = (name, message, user) => {
             break;
         case "1️⃣": case "Ang_Bastiat":
 
-            removeGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA1").first())
+            removeGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "Ang_Bastiat").first())
             break;
         case "2️⃣": case "Ang_McGarry":
 
-            removeGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "TDA2").first())
+            removeGroupe(message.guild.members.cache.get(user.id), message.guild.roles.cache.filter(role => role.name === "Ang_McGarry").first())
             break;
  
         default:
